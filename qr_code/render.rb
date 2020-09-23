@@ -18,7 +18,13 @@ module QrCode
         result = ERB.new(template).result(binding)
         filename = "#{current_dir}/#{FILENAME}"
         File.open(filename, 'w') { |file| file.write(result) }
-        Launchy.open("file:///#{filename}")
+
+        if system("which wslpath") # running inside wsl
+          filename = "file://wsl%24/#{ENV['WSL_DISTRO_NAME']}#{filename}"
+          `cmd.exe /c start #{filename}`
+        else
+          Launchy.open("file:///#{filename}")
+        end
 
         puts "========> You have #{@seconds_to_scan} seconds to scan it!"
         sleep @seconds_to_scan
