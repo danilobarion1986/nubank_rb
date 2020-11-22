@@ -12,7 +12,7 @@ module Xlsx
     class << self
       def call(bill)
         xlsx_data = SpreadsheetArchitect.to_xlsx(headers: HEADERS, data: values_from(bill))
-        now = Time.now.strftime('%d_%m_%y__%H_%M')
+        now = Time.now.strftime('%d_%m_%y__%H_%M_%S')
 
         File.open("nubank_bill_#{now}.xlsx", 'w+b') { |file| file.write(xlsx_data) }
       end
