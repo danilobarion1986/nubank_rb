@@ -13,9 +13,21 @@ require_relative './request/auth/qr_code'
 require_relative './request/auth/password'
 
 # # 0) Get login and password from environment variables
-login = ENV['NUBANK_LOGIN']
-password = ENV['NUBANK_PASSWORD']
-raise ArgumentError, 'Login or password not found in environment variables!' unless login && password
+login = if ENV['NUBANK_LOGIN']
+          ENV['NUBANK_LOGIN']
+        else
+          puts 'Enter you login: '
+          gets
+        end
+
+password = if ENV['NUBANK_PASSWORD']
+             ENV['NUBANK_PASSWORD']
+           else
+             puts 'Enter you password: '
+             gets.chomp
+           end
+
+puts 'Login/password cannot be blank!' if login&.empty? || password&.empty?
 
 # 1) Obtain valid URL's via discovery
 puts '====> Discovering Nubank API endpoints...'
@@ -50,7 +62,7 @@ bills.reject! { |bill| bill[:state] == 'future' }
 Array(bills).each_with_index do |bill, index|
   state = bill[:state]
   effective_due_date = bill.dig(:summary, :effective_due_date)
-  total_balance = '%.2f' % bill[:summary].fetch(:total_balance, 0.0)
+  total_balance = (BigDecimal(bill[:summary].fetch(:total_balance, 0))/BigDecimal(100)).to_s("F")
   puts "#{index}) [#{state}] R$ #{total_balance}, effective due date: #{effective_due_date}"
 end
 chosen_bill_index = gets.chomp.to_i
