@@ -7,7 +7,7 @@ require_relative '../model/expense'
 module Xlsx
   # Create a .xlsx file using bill data
   class Creator
-    HEADERS = %w[Data Descrição Valor Categoria].freeze
+    HEADERS = %w[Data Descrição Categoria Valor].freeze
 
     class << self
       def call(bill)

@@ -12,7 +12,7 @@ module Model
     end
 
     def to_ary
-      @data.values_at(:data, :descricao, :valor, :categoria)
+      @data.values_at(:data, :descricao, :categoria, :valor)
     end
   end
 end
